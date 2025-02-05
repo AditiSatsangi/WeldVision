@@ -6,6 +6,7 @@ import base64
 from io import BytesIO
 import os
 import logging
+import requests
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
