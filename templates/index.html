@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welding Defect Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        select, button {
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        video, #annotatedImage {
+            border: 2px solid #444;
+            border-radius: 5px;
+            max-width: 100%;
+            margin-top: 10px;
+        }
+        #detectedObjects {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welding Defect Detection</h1>
+    <div class="container">
+        <label for="mode">Choose Detection Mode:</label>
+        <select id="mode">
+            <option value="realtime">Real-Time Detection</option>
+            <option value="upload">Upload an Image</option>
+        </select>
+
+        <div id="realTimeSection" class="hidden">
+            <video id="video" width="640" height="480" autoplay></video>
+            <h3>Detection Results:</h3>
+            <div id="detectedObjects"></div>
+            <img id="annotatedImage" class="hidden" />
+        </div>
+
+        <div id="uploadSection" class="hidden">
+            <form id="uploadForm" action="/predict" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modeSelector = document.getElementById('mode');
+        const realTimeSection = document.getElementById('realTimeSection');
+        const uploadSection = document.getElementById('uploadSection');
+        const detectedObjectsDiv = document.getElementById('detectedObjects');
+        const annotatedImage = document.getElementById('annotatedImage');
+
+        modeSelector.addEventListener('change', (e) => {
+            if (e.target.value === 'realtime') {
+                realTimeSection.classList.remove('hidden');
+                uploadSection.classList.add('hidden');
+                startRealTimeDetection();
+            } else {
+                realTimeSection.classList.add('hidden');
+                uploadSection.classList.remove('hidden');
+            }
+        });
+
+        function startRealTimeDetection() {
+            const videoElement = document.getElementById('video');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => videoElement.srcObject = stream)
+                .catch(error => console.log("Webcam access error:", error));
+
+            setInterval(async () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                const imageData = canvas.toDataURL('image/jpeg');
+
+                const response = await fetch('/predict_realtime', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData })
+                });
+
+                const result = await response.json();
+                detectedObjectsDiv.innerHTML = result.detected_objects.map(obj =>
+                    `<p>${obj.label} (Confidence: ${obj.confidence.toFixed(2)})</p>`
+                ).join('');
+
+                annotatedImage.src = 'data:image/jpeg;base64,' + result.annotated_image;
+                annotatedImage.classList.remove('hidden');
+            }, 100);
+        }
+
+        window.onload = () => {
+            modeSelector.value = 'realtime';
+            modeSelector.dispatchEvent(new Event('change'));
+        };
+    </script>
+</body>
+</html>

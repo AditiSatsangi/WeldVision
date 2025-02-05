@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .result-container {
+            max-width: 800px;
+            margin: auto;
+        }
+        img {
+            max-width: 70%; /* Adjust the image width */
+            height: auto;
+            border: 2px solid #ddd; /* Optional: adds border around the image */
+        }
+        .detected-objects {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .detected-object {
+            margin-bottom: 10px;
+            font-size: 18px; /* Increase the font size of detected object text */
+        }
+        h1 {
+            font-size: 36px; /* Increase the font size of the heading */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="result-container">
+        <h1>Prediction Results</h1>
+        
+        <!-- Display the annotated image -->
+        <img src="data:image/jpeg;base64,{{ image_url }}" alt="Annotated Image" />
+        
+        <!-- Display detected objects -->
+        <div class="detected-objects">
+            <h2>Detected Defects:</h2>
+            {% if detected_objects %}
+                <ul>
+                    {% for obj in detected_objects %}
+                        <li class="detected-object">
+                            <strong>{{ obj.label }}</strong> - Confidence: {{ obj.confidence | round(2) }}
+                            <br>
+                            Bounding Box: [{{ obj.box[0] | round(2) }}, {{ obj.box[1] | round(2) }}] to 
+                            [{{ obj.box[2] | round(2) }}, {{ obj.box[3] | round(2) }}]
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No defects detected.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

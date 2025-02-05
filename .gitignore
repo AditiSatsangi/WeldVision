@@ -1,0 +1,21 @@
+# Ignore virtual environments
+# Ignore virtual environments
+venv/
+scvenv/
+.venv/
+env/
+
+
+# Ignore heavy libraries
+*.dll
+*.so
+*.dylib
+*.pyd
+*.lib
+*.h5 
+*.pt
+
+# Ignore IDE & log files
+.vscode/
+logs/
+*.log
