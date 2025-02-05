@@ -12,16 +12,37 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 app = Flask(__name__)
 
-# Path to your YOLOv8 model
-model_path = 'D://A_Projects//Yolo_Deep_learning_modelsre//runs//detect//train2//weights//best.pt'
+# Path to your YOLO model
+#model_path = 'D://A_Projects//Yolo_Deep_learning_modelsre//runs//detect//train2//weights//best.pt'
 #model_path= 'D:\\A_Projects\\Yolo_Deep_learning_modelsre - Copy\\runs\\detect\\train2\\weights\\best.pt'
+# Define the model file URL and local path
 
-if not os.path.exists(model_path):
-    raise FileNotFoundError(f"Model path {model_path} does not exist.")
+# Define the model file URL and local path
+MODEL_URL = "https://aditistorageaccounts12.blob.core.windows.net/yolo/best.pt?sp=r&st=2025-02-05T18:31:11Z&se=2025-05-20T02:31:11Z&spr=https&sv=2022-11-02&sr=b&sig=5zc0bVw50UjaH3DQy3zaWVZDoIxXb3EzJs3ASqFgoBM%3D"
+MODEL_PATH = "best.pt"
 
-model = YOLO(model_path)  # Load YOLOv8 model
-categories = model.names  # Class names
+# Check if the model file exists; if not, download it
+if not os.path.exists(MODEL_PATH):
+    logging.info("Model file not found locally. Downloading from Azure Blob Storage...")
+    try:
+        response = requests.get(MODEL_URL, stream=True)
+        response.raise_for_status()  # ✅ Raise an error for failed requests
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        logging.info("Model downloaded successfully.")
+    except requests.RequestException as e:
+        logging.error(f"Error downloading the model file: {e}")
+        raise SystemExit("Failed to download the model. Exiting...")
 
+# ✅ Load YOLO model using the correct path
+try:
+    model = YOLO(MODEL_PATH)
+    categories = model.names  # Class names
+except Exception as e:
+    logging.error(f"Error loading YOLO model: {e}")
+    raise SystemExit("Failed to load the YOLO model. Exiting...")
+    
 def process_and_predict_yolo(image_data):
     try:
         # Decode base64 and convert to RGB image
