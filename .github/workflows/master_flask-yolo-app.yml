@@ -1,6 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
+
 name: Build and deploy Python app to Azure Web App - flask-yolo-app
 
 on:
@@ -26,14 +27,14 @@ jobs:
       - name: Create and start virtual environment
         run: |
           python -m venv venv
-          # Use bash shell to activate the virtual environment
-          echo "source venv/bin/activate" >> $GITHUB_ENV
+          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
         shell: bash
 
       - name: Install dependencies
         run: |
-          source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
+
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -82,4 +83,3 @@ jobs:
           app-name: 'flask-yolo-app'
           slot-name: 'Production'
 
-          
