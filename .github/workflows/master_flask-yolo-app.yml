@@ -74,12 +74,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
-      # Clean up old logs in the Azure Web App
-      - name: Clean up old logs
-        run: |
-          ssh -o ConnectTimeout=10 -o ConnectionAttempts=3 ${{ secrets.AZURE_SSH_USERNAME }}@${{ secrets.AZURE_APP_NAME }}.azurewebsites.net 'rm -rf /home/LogFiles/*'
-          ssh -o ConnectTimeout=10 -o ConnectionAttempts=3 ${{ secrets.AZURE_SSH_USERNAME }}@${{ secrets.AZURE_APP_NAME }}.azurewebsites.net 'rm -rf /tmp/*'
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
