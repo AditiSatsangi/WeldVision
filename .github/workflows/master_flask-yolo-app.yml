@@ -73,6 +73,11 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          
+      - name: Clean up old logs
+        run: |
+          ssh -o ConnectTimeout=40 -o ConnectionAttempts=5 ${{ secrets.AZURE_SSH_USERNAME }}@flask-yolo-app.azurewebsites.net 'rm -rf /home/LogFiles/*'
+          ssh -o ConnectTimeout=40 -o ConnectionAttempts=5 ${{ secrets.AZURE_SSH_USERNAME }}@flask-yolo-app.azurewebsites.net 'rm -rf /tmp/*'
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
