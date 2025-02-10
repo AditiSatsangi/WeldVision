@@ -49,9 +49,11 @@
             <option value="realtime">Real-Time Detection</option>
             <option value="upload">Upload an Image</option>
         </select>
-
+        
         <div id="realTimeSection" class="hidden">
             <video id="video" width="640" height="480" autoplay></video>
+            <br>
+            <button id="toggleCamera">Switch Camera</button>
             <h3>Detection Results:</h3>
             <div id="detectedObjects"></div>
             <img id="annotatedImage" class="hidden" />
@@ -71,6 +73,9 @@
         const uploadSection = document.getElementById('uploadSection');
         const detectedObjectsDiv = document.getElementById('detectedObjects');
         const annotatedImage = document.getElementById('annotatedImage');
+        const toggleCameraBtn = document.getElementById('toggleCamera');
+        let videoElement = document.getElementById('video');
+        let currentFacingMode = 'environment';
 
         modeSelector.addEventListener('change', (e) => {
             if (e.target.value === 'realtime') {
@@ -84,8 +89,7 @@
         });
 
         function startRealTimeDetection() {
-            const videoElement = document.getElementById('video');
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } })
                 .then(stream => videoElement.srcObject = stream)
                 .catch(error => console.log("Webcam access error:", error));
 
@@ -96,7 +100,7 @@
                 canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
                 const imageData = canvas.toDataURL('image/jpeg');
-
+                
                 const response = await fetch('/predict_realtime', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -110,8 +114,13 @@
 
                 annotatedImage.src = 'data:image/jpeg;base64,' + result.annotated_image;
                 annotatedImage.classList.remove('hidden');
-            }, 100);
+            }, 1000);
         }
+
+        toggleCameraBtn.addEventListener('click', () => {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            startRealTimeDetection();
+        });
 
         window.onload = () => {
             modeSelector.value = 'realtime';
