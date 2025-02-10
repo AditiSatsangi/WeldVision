@@ -96,15 +96,15 @@ def predict_realtime():
     try:
         data = request.get_json()
         image_data = data['image']
+        camera_type = data.get('camera', 'front')  # Default to front if not specified
 
         # Perform object detection
         detected_objects, annotated_image = process_and_predict_yolo(image_data)
 
-        return jsonify({'detected_objects': detected_objects, 'annotated_image': annotated_image})
+        return jsonify({'detected_objects': detected_objects, 'annotated_image': annotated_image, 'camera': camera_type})
     except Exception as e:
         logging.exception("Error in real-time prediction.")
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
