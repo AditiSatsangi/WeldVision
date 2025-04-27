@@ -18,7 +18,8 @@ app = Flask(__name__)
 #model_path= 'D:\\A_Projects\\Yolo_Deep_learning_modelsre - Copy\\runs\\detect\\train2\\weights\\best.pt'
 
 # Define the model file URL and local path https://aditistorageaccounts12.blob.core.windows.net/yolo/best.pt
-MODEL_URL = "https://aditistorageaccounts12.blob.core.windows.net/yolo/best.pt?sp=r&st=2025-03-15T05:20:46Z&se=2025-03-15T13:20:46Z&spr=https&sv=2022-11-02&sr=b&sig=ijzO5lnaK6TrXivztfWu6XcU3tOyqA9mBPGdB2Djpm4%3D"
+# MODEL_URL = "https://aditistorageaccounts12.blob.core.windows.net/yolo/best.pt?sp=r&st=2025-03-15T05:20:46Z&se=2025-03-15T13:20:46Z&spr=https&sv=2022-11-02&sr=b&sig=ijzO5lnaK6TrXivztfWu6XcU3tOyqA9mBPGdB2Djpm4%3D"
+MODEL_URL =  "https://mystorageaccountbs.blob.core.windows.net/yolo/best.pt?sp=r&st=2025-04-27T12:42:52Z&se=2025-04-27T20:42:52Z&spr=https&sv=2024-11-04&sr=b&sig=a3dg8rPNCnoEbSvIlBat%2BHstfTLEksphided41t7nzg%3D"
 MODEL_PATH = "best.pt"
 
 # Check if the model file exists; if not, download it
