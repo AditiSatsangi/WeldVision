@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://weldvisionapp.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_c141109bf5374d47a9c2f487d522c524 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_4bfc9ae85ace4193b3d7ebddfcf9448b }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_572398e2b612444d9419776fa8714ddc }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_cf59b655b1f54d3490f6093b95dd5d68 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: weldvisionapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_c141109bf5374d47a9c2f487d522c524 }}/weldvisionapp:${{ github.sha }}
+        tags: weldvisionapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_572398e2b612444d9419776fa8714ddc }}/weldvisionapp:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'weldvisionapp'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1cd93c63795e4ef2a9e28cd3cc2a0a0a }}
-        images: 'weldvisionapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_c141109bf5374d47a9c2f487d522c524 }}/weldvisionapp:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_76d2841597bd496e93812c81100fbc0b }}
+        images: 'weldvisionapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_572398e2b612444d9419776fa8714ddc }}/weldvisionapp:${{ github.sha }}'
